@@ -9,10 +9,10 @@ var exports = module.exports = {};
 
 var playerCounter = 0; // Use to determine player id
 
-var methodList = {}; // methodList contains function that always return object
+var methodList = {}; // methodList contains function that always return an object
 
-/* Input = Stringify JSON 
-	Output = Stringify JSON */
+/* Input = Stringify Object 
+   Output = Stringify Object */
 exports.process = function(data){
 	var message = JSON.parse(data);
 	var method = message.method;

@@ -6,7 +6,7 @@
 "use strict";
 
 var net = require('net');
-var process = require('./process.js');
+var process = require('./server-processor.js');
 
 var host = '127.0.0.1',
 	port = 7777;
