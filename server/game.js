@@ -17,7 +17,7 @@ class Game{
 Game.prototype.addPlayer = function(player){
 
 	// gets the new length of the object upon pushing
-	var index = this.playerList.push(player);
+	this.playerList.push(player);
 	this.usernameMap[player.username] = 1;
 
 };
@@ -29,13 +29,29 @@ Game.prototype.isUserExist = function(username){
 
 Game.prototype.removePlayer = function(username){
 	for (var i = 0;i<this.playerList.length();i++){
-		if (playerList[i].username === username){
+		if (this.playerList[i].username === username){
 			this.playerList.splice(i,1);
 		}
 	}
 	this.usernameMap[username] = null;
 };
 
+Game.prototype.changeReadyStat = function(username){
+	for (var i = 0;i<this.playerList.length();i++){
+		if (this.playerList[i].username === username){
+			this.playerList[i].readyStat = 1;
+		}
+	}
+};
 
+Game.prototype.isReadyAll = function(){
+	var ready = 1;
+	for (var i = 0;i<this.playerList.length();i++){
+		if (this.playerList[i].readyStat === 0){
+			ready = 0;
+		}
+	}
+	return ready;
+};
 
 module.exports = Game;

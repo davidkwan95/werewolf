@@ -88,8 +88,23 @@ methodList.leave = function(message, sock){
 methodList.ready = function(message, sock){
 
 	var response;
-	game.removePlayer(sock.username);
-	response =  { "status" : "ok"};
+	game.changeReadyStat(sock.username);
+	
+	response =  { "status" : "ok",
+				  "description" : "waiting for other player to start"
+				};
+	
+	return response;
+};
+
+methodList.start = function(message, sock){
+
+	var response;
+	if (game.isReadyAll){
+		game.startGame;
+		response =  { "status" : "ok",
+					};
+	}
 	
 	return response;
 };
