@@ -38,6 +38,9 @@ methodList.join = function(message){
 methodList.client_address = function(message){
 
 	clientList = message.clients;
+	for(var i=0; i<clientList; i++){
+		
+	}
 };
 
 methodList.ready = function(){
