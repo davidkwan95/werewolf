@@ -12,6 +12,7 @@ class Player{
 		this.udpHost = udpHost;
 		this.udpPort = udpPort;
 		this.sock = sock;
+		this.readyStat = 0;
 	}
 }
 
