@@ -8,8 +8,7 @@
 var net = require('net');
 var processor = require('./server-processor.js');
 
-var host = '127.0.0.1',
-	port = 7777;
+var port = 7777;
 
 var server = net.createServer(function(sock){
 
@@ -32,6 +31,6 @@ var server = net.createServer(function(sock){
 
 });
 
-server.listen(port, host);
+server.listen(port);
 
-console.log('Listening on ' + host + ":" + port);
+console.log('Listening on ' + port);
