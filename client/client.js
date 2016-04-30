@@ -19,12 +19,19 @@ tcp.connect(tcpPort, tcpHost, function(){
 	console.log("Connected to: " + tcpHost + ":" + tcpPort);
 	
 	var username = readlineSync.question("Enter your username: ");
+	
+	// Join method
 	var message = { "method" : "join",
 					"username" : username,
 					"udp_host" : udpHost,
 					"udp_port" : udpPort
 				  };
 	var json = JSON.stringify(message);
+	tcp.write(json);
+
+	// List client
+	message = { "method" : "client_address" };
+	json = JSON.stringify(message);
 	tcp.write(json);
 });
 

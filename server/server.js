@@ -6,7 +6,7 @@
 "use strict";
 
 var net = require('net');
-var process = require('./server-processor.js');
+var processor = require('./server-processor.js');
 
 var host = '127.0.0.1',
 	port = 7777;
@@ -21,7 +21,7 @@ var server = net.createServer(function(sock){
 	sock.on('data', function(data){
 		console.log("Received Message from " + sock.ip + ":" + sock.port + " = " + data);
 		
-		var response = process.process(data);
+		var response = processor.process(data, sock);
 		console.log("Sent message to " + sock.ip + ":" + sock.port + " = " + response);
 		sock.write(response);
 	});
