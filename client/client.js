@@ -33,6 +33,23 @@ tcp.connect(tcpPort, tcpHost, function(){
 	message = { "method" : "client_address" };
 	json = JSON.stringify(message);
 	tcp.write(json);
+
+	setTimeout( function(){
+		message = { "method" : "ready" }; // Test ready
+		json = JSON.stringify(message);
+		tcp.write(json);	
+	}
+		, 100 );
+
+	setTimeout( function(){
+		message = { "method" : "leave" }; // Test leave
+		json = JSON.stringify(message);
+		tcp.write(json);	
+	}
+		, 100 );
+
+	
+	
 });
 
 tcp.on('data', function(data){
@@ -52,5 +69,7 @@ udp.on('message', function(data, remote){
 	
 	console.log(remote.address+":"+remote.port + " sent: " + data);
 });
+
+
 udp.bind(udpPort, "127.0.0.1");
 console.log("Binding to portno: " + udpPort);

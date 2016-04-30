@@ -28,16 +28,19 @@ Game.prototype.isUserExist = function(username){
 };
 
 Game.prototype.removePlayer = function(username){
-	for (var i = 0;i<this.playerList.length();i++){
+	for (var i = 0;i<this.playerList.length;i++){
+		console.log("Username " + username);
+		console.log("Username Player List " + this.playerList[i].username);
 		if (this.playerList[i].username === username){
 			this.playerList.splice(i,1);
 		}
 	}
-	this.usernameMap[username] = null;
+	console.log("Hash " + this.usernameMap[username]);
+	delete this.usernameMap[username];
 };
 
 Game.prototype.changeReadyStat = function(username){
-	for (var i = 0;i<this.playerList.length();i++){
+	for (var i = 0;i<this.playerList.length;i++){
 		if (this.playerList[i].username === username){
 			this.playerList[i].readyStat = 1;
 		}
@@ -46,7 +49,7 @@ Game.prototype.changeReadyStat = function(username){
 
 Game.prototype.isReadyAll = function(){
 	var ready = 1;
-	for (var i = 0;i<this.playerList.length();i++){
+	for (var i = 0;i<this.playerList.length;i++){
 		if (this.playerList[i].readyStat === 0){
 			ready = 0;
 		}

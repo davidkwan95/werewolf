@@ -80,6 +80,7 @@ methodList.leave = function(message, sock){
 
 	var response;
 	game.removePlayer(sock.username);
+	console.log(sock.username);
 	response =  { "status" : "ok"};
 	
 	return response;
