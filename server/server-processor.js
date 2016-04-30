@@ -96,3 +96,15 @@ methodList.ready = function(message, sock){
 	
 	return response;
 };
+
+methodList.start = function(message, sock){
+
+	var response;
+	if (game.isReadyAll){
+		game.startGame;
+		response =  { "status" : "ok",
+					};
+	}
+	
+	return response;
+};

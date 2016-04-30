@@ -36,6 +36,26 @@ Game.prototype.removePlayer = function(username){
 	this.usernameMap[username] = null;
 };
 
+Game.prototype.changeReadyStat = function(username){
+	for (var i = 0;i<this.playerList.length();i++){
+		if (playerList[i].username === username){
+			this.playerList[i].readyStat = 1;
+		}
+	}
+};
+
+Game.prototype.isReadyAll = function(){
+	var ready = 1;
+	for (var i = 0;i<this.playerList.length();i++){
+		if (playerList[i].readyStat === 0){
+			ready = 0;
+	}
+	return ready;
+};
+
+Game.prototype.startGame = function(){
+	
+};
 
 
 module.exports = Game;
