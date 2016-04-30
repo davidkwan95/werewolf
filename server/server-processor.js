@@ -32,6 +32,7 @@ methodList.join = function(message, sock){
 		
 		var player = new Player(playerCounter, message.username, message.udp_host, message.udp_port, sock);
 		game.addPlayer(player);
+		sock.username = message.username;
 
 		response =  { "status" : "ok",
 				  	  "player_id" : playerCounter++
@@ -71,5 +72,24 @@ methodList.client_address = function(){
 				  "clients" : clients
 				};
 
+	return response;
+};
+
+
+methodList.leave = function(message, sock){
+
+	var response;
+	game.removePlayer(sock.username);
+	response =  { "status" : "ok"};
+	
+	return response;
+};
+
+methodList.ready = function(message, sock){
+
+	var response;
+	game.removePlayer(sock.username);
+	response =  { "status" : "ok"};
+	
 	return response;
 };
