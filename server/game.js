@@ -39,7 +39,7 @@ Game.prototype.removePlayer = function(username){
 	delete this.usernameMap[username];
 };
 
-Game.prototype.changeReadyStat = function(username){
+Game.prototype.changeReadyStat = function(username){	
 	for (var i = 0;i<this.playerList.length;i++){
 		if (this.playerList[i].username === username){
 			this.playerList[i].readyStat = 1;
@@ -102,47 +102,139 @@ Game.prototype.setPlayerRole = function(){
 	}
 };
 
+Game.prototype.killPlayer = function(playerId){	
+	for(var i=0; i<this.playerList.length; i++){
+		if(this.playerList.playerId == playerId){
+			this.playerList.isAlive = 0;
+		}
+	}
+};
+
 Game.prototype.startGame = function(){
 	var message;
-	var roleList = this.randomWerewolf();
 	var listWerewolf = [];
 	var werewolf = 0;
 	var count = 0;
 	while(werewolf < 2){
-		if(this.playerList[count] === "werewolf"){	
+		if(this.playerList[count].role === "werewolf"){	
 			listWerewolf[werewolf] = this.playerList[count];
 			werewolf++;
 		}
 		count++;
 	}
 	werewolf = 0;
+	var stringMessage;
 	for(var i=0; i<this.playerList.length; i++){
 		if(this.playerList[i].role == "civilian"){
 			message = { "method" : "start",
-						"time" : "night",
+						"time" : "day",
 						"role" : this.playerList[i].role,
 						"friend" : "",
 						"description" : "game is started",
 					  };
+			stringMessage = JSON.stringify(message);
+			this.playerList[i].sock.write(stringMessage);
 		} else{
 			if(werewolf === 0){
 				message = { "method" : "start",
-							"time" : "night",
+							"time" : "day",
 							"role" : this.playerList[i].role,
 							"friend" : [listWerewolf[1].username],
 							"description" : "game is started",
 						  };	
 			} else{
 				message = { "method" : "start",
-							"time" : "night",
+							"time" : "day",
 							"role" : this.playerList[i].role,
 							"friend" : [listWerewolf[0].username],
 							"description" : "game is started",
 						  };
 			}
+			stringMessage = JSON.stringify(message);
+			this.playerList[i].sock.write(stringMessage);
 			werewolf++;
 		}
-	}	
+	}
+	this.start = true;
+};
+
+Game.prototype.changePhase = function(){
+	var message;
+	var stringMessage;
+	if(this.phase[1] === "night"){
+		message = {
+					"method" : "change_phase",
+					"time" : "day",
+					"days" : 3,
+					"description" : "",
+				};
+		this.phase[1] = "day";
+		stringMessage = JSON.stringify(message);
+		for(var i=0; i<this.playerList.length; i++){
+			this.playerList[i].sock.write(stringMessage);
+		}
+	} else{
+		message = {
+					"method" : "change_phase",
+					"time" : "night",
+					"days" : 3,
+					"description" : "",
+				};
+		this.phase[1] = "night";
+		stringMessage = JSON.stringify(message);
+		for(var i=0; i<this.playerList.length; i++){
+			this.playerList[i].sock.write(stringMessage);
+		}
+	}
+};
+
+Game.prototype.timeToVote = function(){
+	var message;
+	var stringMessage;
+	if(this.start == true){
+		message = {
+					"method" = "vote_now",
+					"phase" = this.phase[1];
+				};
+		stringMessage = JSON.stringify(message);
+		for(var i=0; i<this.playerList.length; i++){
+			this.playerList[i].sock.write(stringMessage);
+		}
+	}
+}
+
+Game.prototype.isGameOver = function(){
+	var countWerewolf = 0;
+	var countCivilian = 0;
+	for(var i=0; i<this.playerList.length; i++){
+		if(this.playerList[i].role == "civilian"){
+			countCivilian++;
+		} else {
+			countWerewolf++;
+		}
+	}
+	if (countWerewolf === 0){
+		return 1;
+	} else if (countWerewolf === countCivilian){
+		return 2;
+	} else {
+		return 0;
+	}
+};
+
+Game.prototype.gameOver = function(){
+	var message;
+	if (isGameOver === 1){
+		message = { "method" : "game_over",
+					"winner" : "civilian",
+					"description" : "",
+				  };
+	} else {
+		message = { "method" : "game_over",
+					"winner" : "werewolf",
+					"description" : "",
+				  };
+	}
 };
 
 module.exports = Game;

@@ -58,3 +58,18 @@ methodList.ready = function(){
 methodList.leave = function(){
 	return;
 };
+
+
+methodList.start = function(){
+	var response;
+	response =  { "status" : "ok"}
+	
+	return response;
+};
+
+methodList.changePhase = function(){
+	var response;
+	response =  { "status" : "ok"}
+	
+	return response;
+};
