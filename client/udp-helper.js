@@ -174,7 +174,7 @@ methodList.prepare_proposal = function(message){
 	return response;
 };
 
-methodList.accept_proposal = function(message){
+methodList.accept_proposal = function(message, client){
 	var response;
 	var acceptKpuValue = true;
 
@@ -190,6 +190,8 @@ methodList.accept_proposal = function(message){
 		
 		paxos.currentPromise = message.proposal_id;
 		paxos.acceptedKpu = message.kpu_id;
+
+		client.tcpWriter.execute("accepted_proposal", client, [paxos.acceptedKpu]);
 	
 	} else {
 		response =  { "status" : "fail",

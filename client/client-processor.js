@@ -19,10 +19,14 @@ exports.process = function(data, client){
 	var method = message.method || client.tcp.currentRequest;
 
 	console.log(method);
-	methodList[method](message, client);
+	var response = methodList[method](message, client);
 	
 	// Set the currentRequest back to none, as the request has been responded
-	client.tcp.currentRequest = ""; 
+	if(!message.method)
+		client.tcp.currentRequest = "";
+
+	if(response)
+		client.tcp.write(JSON.stringify(response));
 };
 
 
@@ -68,9 +72,14 @@ methodList.changePhase = function(){
 	return response;
 };
 
+methodList.accepted_proposal = function(){
+
+	return;
+};
+
 methodList.timeToVote = function(){
 	var response;
 	response = {"status" : "ok"};
 
 	return response;
-}
+};

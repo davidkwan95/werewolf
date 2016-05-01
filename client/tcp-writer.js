@@ -13,7 +13,7 @@ const readlineSync = require('readline-sync');
 var commandList = {}; // methodList contains function that always return an object
 
 
-exports.execute = function(command, client){
+exports.execute = function(command, client, args){
 
 	if(client.tcp.currentRequest){
 		console.log("The previous request has not finished, try again later!");
@@ -25,7 +25,7 @@ exports.execute = function(command, client){
 		return;
 	}
 
-	var message = commandList[command](client);
+	var message = commandList[command](client, args);
 	client.tcp.currentRequest = command;
 
 	client.tcp.write(JSON.stringify(message));
@@ -80,6 +80,17 @@ commandList.ready = function(){
 commandList.leave = function(){
 	
 	var message = { "method" : "leave" }; // Test leave
+
+	return message;
+};
+
+commandList.accepted_proposal = function(client, args){
+	var kpuId = args[0];
+
+	var message = { "method" : "accepted_proposal",
+					"kpu_id" : kpuId,
+					"description" : "Kpu is selected"
+				  };
 
 	return message;
 };

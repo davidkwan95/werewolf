@@ -6,12 +6,12 @@
 
 var net = require('net');
 var processor = require('./client-processor.js');
-var tcpWriter = require('./tcp-writer');
 
 var tcpHost = '127.0.0.1',
 	tcpPort = '7777';
 
 var client = {}; // Store information about the user who runs the program
+client.tcpWriter = require('./tcp-writer');
 client.udpHelper = require('./udp-helper.js');
 
 // This part is used for tcp connection to the server
@@ -21,12 +21,12 @@ client.tcp.connect(tcpPort, tcpHost, function(){
 	client.tcp.currentRequest = "";
 	console.log("Connected to: " + tcpHost + ":" + tcpPort);
 	
-	tcpWriter.execute("join", client);
+	client.tcpWriter.execute("join", client);
 
 	// List client
 	setTimeout(function(){
 
-		tcpWriter.execute("client_address", client);
+		client.tcpWriter.execute("client_address", client);
 	}, 1000);
 
 	// // Test ready

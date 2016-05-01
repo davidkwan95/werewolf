@@ -11,6 +11,8 @@ class Game{
 		this.usernameMap = {};
 		this.start = false;
 		this.phase = [1,"night"];
+		this.kpuVote = {};
+		this.selectedKpu = -1;
 	}
 }
 
