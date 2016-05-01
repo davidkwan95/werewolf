@@ -12,6 +12,7 @@ var tcpHost = '127.0.0.1',
 	tcpPort = '7777';
 
 var client = {}; // Store information about the user who runs the program
+client.udpHelper = require('./udp-helper.js');
 
 // This part is used for tcp connection to the server
 client.tcp = new net.Socket();
