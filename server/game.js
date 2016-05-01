@@ -63,7 +63,7 @@ Game.prototype.randomWerewolf = function(){
 	var role;
 	for (var i = 0;i<this.playerList.length();i++){
 		role = Math.random();
-		if (role == 1){
+		if (role === 1){
 			if (countWerewolf < 2){
 				roleList.push(role);
 				countWerewolf++;
@@ -72,7 +72,7 @@ Game.prototype.randomWerewolf = function(){
 				roleList.push(role);
 			}
 		} else {
-			if (i == this.playerList.length()-2 && countWerewolf == 0){
+			if (i === this.playerList.length()-2 && countWerewolf === 0){
 				role = 1;
 				roleList.push(role);
 				roleList.push(role);
@@ -93,18 +93,18 @@ Game.prototype.randomWerewolf = function(){
 };
 
 Game.prototype.setPlayerRole = function(){
-	var roleList = randomWerewolf();
+	var roleList = this.randomWerewolf();
 	for(var i=0; i<this.playerList.length; i++){
 		if(roleList[i] == 1)
-			playerList[i].role = "werewolf";
+			this.playerList[i].role = "werewolf";
 		else
-			playerList[i].role = "civilian";
-	)
-}
+			this.playerList[i].role = "civilian";
+	}
+};
 
 Game.prototype.startGame = function(){
 	var message;
-	var roleList = randomWerewolf();
+	var roleList = this.randomWerewolf();
 	var listWerewolf = [];
 	var werewolf = 0;
 	var count = 0;
@@ -118,31 +118,31 @@ Game.prototype.startGame = function(){
 	werewolf = 0;
 	for(var i=0; i<this.playerList.length; i++){
 		if(this.playerList[i].role == "civilian"){
-			message = { "method" = "start",
-						"time" = "night",
-						"role" = this.playerList[i].role,
-						"friend" = "",
-						"description" = "game is started",
-					}
+			message = { "method" : "start",
+						"time" : "night",
+						"role" : this.playerList[i].role,
+						"friend" : "",
+						"description" : "game is started",
+					  };
 		} else{
-			if(werewolf == 0){
-				message = { "method" = "start",
-						"time" = "night",
-						"role" = this.playerList[i].role,
-						"friend" = [listWerewolf[1].username],
-						"description" = "game is started",
-					}	
+			if(werewolf === 0){
+				message = { "method" : "start",
+							"time" : "night",
+							"role" : this.playerList[i].role,
+							"friend" : [listWerewolf[1].username],
+							"description" : "game is started",
+						  };	
 			} else{
-				message = { "method" = "start",
-						"time" = "night",
-						"role" = this.playerList[i].role,
-						"friend" = [listWerewolf[0].username],
-						"description" = "game is started",
-					}
+				message = { "method" : "start",
+							"time" : "night",
+							"role" : this.playerList[i].role,
+							"friend" : [listWerewolf[0].username],
+							"description" : "game is started",
+						  };
 			}
 			werewolf++;
 		}
 	}	
-}
+};
 
 module.exports = Game;
