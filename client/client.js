@@ -34,10 +34,10 @@ client.tcp.connect(tcpPort, tcpHost, function(){
 		tcpWriter.execute("ready", client);
 	}, 2000);
 
-	setTimeout( function(){
+	// setTimeout( function(){
 		
-		tcpWriter.execute("leave", client);
-	}, 2500 );
+	// 	tcpWriter.execute("leave", client);
+	// }, 2500 );
 
 });
 

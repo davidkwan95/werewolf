@@ -193,8 +193,8 @@ Game.prototype.timeToVote = function(){
 	var stringMessage;
 	if(this.start == true){
 		message = {
-					"method" = "vote_now",
-					"phase" = this.phase[1];
+					"method" : "vote_now",
+					"phase" : this.phase[1]
 				};
 		stringMessage = JSON.stringify(message);
 		for(var i=0; i<this.playerList.length; i++){
