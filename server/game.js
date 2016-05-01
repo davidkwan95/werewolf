@@ -39,7 +39,7 @@ Game.prototype.removePlayer = function(username){
 	delete this.usernameMap[username];
 };
 
-Game.prototype.changeReadyStat = function(username){
+Game.prototype.changeReadyStat = function(username){	
 	for (var i = 0;i<this.playerList.length;i++){
 		if (this.playerList[i].username === username){
 			this.playerList[i].readyStat = 1;
@@ -102,6 +102,14 @@ Game.prototype.setPlayerRole = function(){
 	}
 };
 
+Game.prototype.killPlayer = function(playerId){	
+	for(var i=0; i<this.playerList.length; i++){
+		if(this.playerList.playerId == playerId){
+			this.playerList.isAlive = 0;
+		}
+	}
+};
+
 Game.prototype.startGame = function(){
 	var message;
 	var roleList = this.randomWerewolf();
@@ -124,6 +132,7 @@ Game.prototype.startGame = function(){
 						"friend" : "",
 						"description" : "game is started",
 					  };
+
 		} else{
 			if(werewolf === 0){
 				message = { "method" : "start",

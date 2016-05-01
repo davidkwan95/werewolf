@@ -80,3 +80,32 @@ commandList.leave = function(){
 
 	return message;
 };
+
+commandList.vote_result_civilian = function(){
+	
+	var message = { "method" : "vote_result_civilian",
+					"vote_status" : 1,
+					"player_killed" : 4, // ganti setelah dapet player mati
+					"vote_result" : "[1, 2]"
+				  };
+	return message;
+};
+
+commandList.vote_result = function(){
+	
+	var message = { "method" : "vote_result_civilian",
+					"vote_status" : -1,
+					"vote_result" : "[1, 2]"
+				  };
+	return message;
+};
+
+commandList.vote_result_werewolf = function(){
+	
+	var message = { "method" : "vote_result_werewolf",
+					"vote_status" : 1,
+					"player_killed" : 4, // ganti setelah dapet player mati
+					"vote_result" : "[1, 2]"
+				  };
+	return message;
+};

@@ -111,6 +111,38 @@ methodList.ready = function(message, sock){
 	return response;
 };
 
+methodList.vote_result_civilian = function(message, sock){
+	var response;
+	if(message.vote_status == 1){
+		game.killPlayer(message.player_killed);
+		response =  { "status" : "ok",
+					  "description" : "player " + message.player_killed + " is killed"
+					};
+	}else if (message.vote_status == -1){
+		response =  { "status" : "ok",
+					  "description" : ""
+					};
+	}
+
+	return response;
+};
+
+methodList.vote_result_werewolf = function(message, sock){
+	var response;
+	if(message.vote_status == 1){
+		game.killPlayer(message.player_killed);
+		response =  { "status" : "ok",
+					  "description" : "player " + message.player_killed + " is killed"
+					};
+	}else if (message.vote_status == -1){
+		response =  { "status" : "ok",
+					  "description" : ""
+					};
+	}
+
+	return response;
+};
+
 // methodList.start = function(message, sock){
 
 // 	var response;
