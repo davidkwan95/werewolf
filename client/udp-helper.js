@@ -19,7 +19,7 @@ exports.process = function(data, remote, client){
 
 	if(response){
 		var json = JSON.stringify(response);
-		client.udpHelper.sendMessage(json, remote.port, remote.host, client.udp);
+		client.udpHelper.sendMessage(json, remote.port, remote.address, client.udp);
 	}
 };
 
@@ -38,7 +38,7 @@ exports.startPaxos = function(clientList, client){
 
 	paxos.isKpuSelected = false;
 	paxos.isProposer = false;
-	paxos.proposalId = 1;
+	paxos.proposalId = 0;
 
 	if(clientList[clientList.length-1].username === client.username || 
 		clientList[clientList.length-2].username === client.username){
@@ -53,10 +53,11 @@ exports.startPaxos = function(clientList, client){
 exports.sendProposal = function(clientList, client){
 
 	paxos.promiseCount = 0;
+	paxos.previousAccepted = {};
 
 	paxos.state = "countingPromise";
 	var message = {	"method" : "prepare_proposal",
-					"proposal_id" : [paxos.proposalId++, client.playerId]
+					"proposal_id" : [++paxos.proposalId, client.playerId]
 				  };
 
 	var json = JSON.stringify(message);
@@ -67,41 +68,88 @@ exports.sendProposal = function(clientList, client){
 
 		exports.sendMessage(json, port, host, client.udp);
 	}
-
 	var majority = Math.floor((clientList.length - 2)/2) + 1;
-	console.log("Majority " + majority);
 
-	var intervalId = setInterval(function(){
-		var i = 0;
-		if(i > 2*100 || paxos.promiseCount >= majority)
-			clearTimeout(intervalId);
-	}, 100);
+	paxos.callback = function(){
+		if(paxos.promiseCount >= majority){
+			clearTimeout(paxos.intervalId);
+			console.log("Promise phase complete, continuing to sending accept request");
+			exports.sendAccept(clientList, client);
+		}
+	};
 
-	if(paxos.promiseCount >= majority){
-		console.log("Promise phase done, continuing to accept phase");
-		exports.sendAccept(clientList, client);
-	} else{
-		console.log("Majority fail, resending proposal");
-		exports.sendProposal(clientList, client);
-	}
+	paxos.intervalId = setTimeout(function(){
+
+		if(paxos.promiseCount < majority){
+			console.log("Promise majority fail, resending proposal");
+			exports.sendProposal(clientList, client);
+		}
+
+	}, 20000);
 };
 
 exports.sendAccept = function(clientList, client){
+	var kpuId;
+	var i;
+	if(paxos.previousAccepted.length){
+		var maxValue = 0;
+		for(i in paxos.previousAccepted){
+			if(paxos.previousAccepted[i] > maxValue){
+				maxValue = paxos.previousAccepted[i];
+				kpuId = i;
+			}
+		}
+	} else {
+		kpuId = client.playerId;
+	}
+
+
+	paxos.acceptCount = 0;
+	paxos.state = "countingAccept";
+	var message = {	"method" : "accept_proposal",
+					"proposal_id" : [paxos.proposalId, client.playerId],
+				  	"kpu_id" : kpuId,
+				  };
+
+	var json = JSON.stringify(message);
+
+	for(i = 0 ; i < clientList.length - 2; i++){
+		var port = clientList[i].port,
+			host = clientList[i].address;
+
+		exports.sendMessage(json, port, host, client.udp);
+	}
 	
+	var majority = Math.floor((clientList.length - 2)/2) + 1;
+
+	paxos.callback = function(){
+		if(paxos.acceptCount >= majority){
+			clearTimeout(paxos.intervalId);
+			console.log("Accept phase complete, waiting for server to respond");
+			console.log("Chosen KPU: " + kpuId);
+		}
+	};
+
+	paxos.intervalId = setInterval(function(){
+		
+		if(paxos.acceptCount < majority){
+			console.log("Accept majority fail, resending proposal");
+			exports.sendProposal(clientList, client);
+		}
+	}, 20000);
 };
 
+var isBigger = function(promise1, promise2){
+	if(promise1[0] === promise2[0]){
+		return promise1[1] > promise2[1];
+	} else{
+		return promise1[0] > promise2[0];
+	}
+};
 
 methodList.prepare_proposal = function(message){
 	var response;
 	var acceptPromise = true;
-	
-	var isBigger = function(promise1, promise2){
-		if(promise1[0] === promise2[0]){
-			return promise1[1] > promise2[1];
-		} else{
-			return promise1[0] > promise2[0];
-		}
-	};
 
 	if(paxos.currentPromise){
 		if(isBigger(paxos.currentPromise, message.proposal_id))
@@ -126,9 +174,53 @@ methodList.prepare_proposal = function(message){
 	return response;
 };
 
+methodList.accept_proposal = function(message){
+	var response;
+	var acceptKpuValue = true;
+
+	if(paxos.currentPromise){
+		if(isBigger(paxos.currentPromise, message.proposal_id))
+			acceptKpuValue = false;
+	}
+
+	if(acceptKpuValue){
+		response =  { "status" : "ok",
+					  "description" : "accepted"
+					};
+		
+		paxos.currentPromise = message.proposal_id;
+		paxos.acceptedKpu = message.kpu_id;
+	
+	} else {
+		response =  { "status" : "fail",
+					  "description" : "rejected"
+					};
+	}
+
+	return response;
+};
+
 methodList.countingPromise = function(message){
 	if(message.status === "ok"){
 		paxos.promiseCount++;
-		console.log(paxos.promiseCount);
+
+		var previousAccepted = message.previous_accepted;
+
+		if(paxos.previousAccepted[previousAccepted]){
+			paxos.previousAccepted[previousAccepted]++;
+		} else {
+			if(previousAccepted)
+				paxos.previousAccepted[previousAccepted] = 1;
+		}
+
+		paxos.callback();
+	}
+};
+
+methodList.countingAccept = function(message){
+	if(message.status === "ok"){
+		paxos.acceptCount++;
+
+		paxos.callback();
 	}
 };
