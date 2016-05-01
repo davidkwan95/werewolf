@@ -145,3 +145,4 @@ methodList.gameOver = function(message, sock){
 	}
 	
 	return response;
+};
