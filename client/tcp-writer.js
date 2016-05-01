@@ -51,7 +51,8 @@ commandList.join = function(client){
 
 	client.udp.on('message', function(data, remote){
 		
-		console.log("UDP data from " + remote.address + " " + remote.port + ": " + data);
+		client.udpHelper.process(data, remote, client);
+				
 	});
 
 	client.udp.bind(client.udpPort, "127.0.0.1");
