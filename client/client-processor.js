@@ -62,14 +62,21 @@ methodList.leave = function(){
 
 methodList.start = function(){
 	var response;
-	response =  { "status" : "ok"}
+	response =  { "status" : "ok"};
 	
 	return response;
 };
 
 methodList.changePhase = function(){
 	var response;
-	response =  { "status" : "ok"}
+	response =  { "status" : "ok"};
 	
 	return response;
 };
+
+methodList.timeToVote = function(){
+	var response;
+	response = {"status" : "ok"};
+
+	return response;
+}
