@@ -145,4 +145,23 @@ Game.prototype.startGame = function(){
 	}	
 };
 
+Game.prototype.changePhase = function(){
+	var message;
+	if(this.phase[1] === "night"){
+		message = {
+					"method" : "change_phase",
+					"time" : "night",
+					"days" : 3,
+					"description" : "",
+				};
+	} else{
+		message = {
+					"method" : "change_phase",
+					"time" : "day",
+					"days" : 3,
+					"description" : "",
+				};
+	}
+};
+
 module.exports = Game;
