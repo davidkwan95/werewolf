@@ -28,11 +28,11 @@ client.tcp.connect(tcpPort, tcpHost, function(){
 		tcpWriter.execute("client_address", client);
 	}, 1000);
 
-	// Test ready
-	setTimeout(function(){
+	// // Test ready
+	// setTimeout(function(){
 
-		tcpWriter.execute("ready", client);
-	}, 2000);
+	// 	tcpWriter.execute("ready", client);
+	// }, 2000);
 
 	// setTimeout( function(){
 		
@@ -44,7 +44,7 @@ client.tcp.connect(tcpPort, tcpHost, function(){
 client.tcp.on('data', function(data){
 
 	console.log("Server sent: " + data);
-	processor.process(data, client.tcp);
+	processor.process(data, client);
 });
 
 client.tcp.on('close', function(){

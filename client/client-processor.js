@@ -5,6 +5,8 @@
 
 "use strict";
 
+var udpHelper = require('./udp-helper.js');
+
 var exports = module.exports = {};
 
 var clientList = [];
@@ -12,20 +14,17 @@ var joinned = false;
 
 var methodList = {}; // methodList contains function that always return an object
 
-/* Input = Stringify Object 
-   Output = Stringify Object */
-exports.process = function(data, tcp){
+
+exports.process = function(data, client){
 
 	var message = JSON.parse(data);
-	var method = message.method || tcp.currentRequest;
+	var method = message.method || client.tcp.currentRequest;
 
 	console.log(method);
-	var result = methodList[method](message, tcp);
+	methodList[method](message, client);
 	
 	// Set the currentRequest back to none, as the request has been responded
-	tcp.currentRequest = ""; 
-
-	return JSON.stringify(result);
+	client.tcp.currentRequest = ""; 
 };
 
 
@@ -38,11 +37,17 @@ methodList.join = function(message){
 	}
 };
 
-methodList.client_address = function(message){
+methodList.client_address = function(message, client){
 
 	clientList = message.clients;
-	for(var i=0; i<clientList; i++){
-		
+
+	for(var i=0; i<clientList.length; i++){
+		var port = clientList[i].port,
+			host = clientList[i].address;
+
+		var udpMessage = "Hello " + clientList[i].username + " from " + client.username; 
+		console.log(udpMessage);
+		udpHelper.sendMessage(udpMessage, port, host, client.udp);
 	}
 };
 

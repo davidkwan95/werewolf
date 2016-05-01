@@ -16,7 +16,7 @@ var commandList = {}; // methodList contains function that always return an obje
 exports.execute = function(command, client){
 
 	if(client.tcp.currentRequest){
-		console.log("The previous request has not been responded, try again later!");
+		console.log("The previous request has not finished, try again later!");
 		return;
 	}
 
@@ -36,9 +36,10 @@ exports.execute = function(command, client){
 commandList.join = function(client){
 
 	client.username = readlineSync.question("Enter your username: ");
-	client.udpHost = '127.0.0.1'; // udpHost will be entered by user later
-	client.udpPort = readlineSync.question("Enter port number to bind to: ");
 	
+	client.udpHost = "127.0.0.1";
+	client.udpPort = readlineSync.question("Enter port number to bind to: ");
+
 	var message = { "method" : "join",
 					"username" : client.username,
 					"udp_host" : client.udpHost,
@@ -50,10 +51,10 @@ commandList.join = function(client){
 
 	client.udp.on('message', function(data, remote){
 		
-		console.log(remote.address+":"+remote.port + " sent: " + data);
+		console.log("UDP data from " + remote.address + " " + remote.port + ": " + data);
 	});
 
-	client.udp.bind(client.udpPort);
+	client.udp.bind(client.udpPort, "127.0.0.1");
 	console.log("Binding to portno: " + client.udpPort);
 
 	return message;
