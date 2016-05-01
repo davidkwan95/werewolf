@@ -169,4 +169,38 @@ Game.prototype.changePhase = function(){
 	}
 };
 
+Game.prototype.isGameOver = function(){
+	var countWerewolf = 0;
+	var countCivilian = 0;
+	for(var i=0; i<this.playerList.length; i++){
+		if(this.playerList[i].role == "civilian"){
+			countCivilian++;
+		} else {
+			countWerewolf++;
+		}
+	}
+	if (countWerewolf === 0){
+		return 1;
+	} else if (countWerewolf === countCivilian){
+		return 2;
+	} else {
+		return 0;
+	}
+};
+
+Game.prototype.gameOver = function(){
+	var message;
+	if (isGameOver === 1){
+		message = { "method" : "game_over",
+					"winner" : "civilian",
+					"description" : "",
+				  };
+	} else {
+		message = { "method" : "game_over",
+					"winner" : "werewolf",
+					"description" : "",
+				  };
+	}
+};
+
 module.exports = Game;

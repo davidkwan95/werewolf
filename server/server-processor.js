@@ -130,3 +130,18 @@ methodList.ready = function(message, sock){
 	
 // 	return response;
 // };
+
+methodList.gameOver = function(message, sock){
+
+	var response;
+	if (game.isGameOver !== 0){
+		game.gameOver;
+		response =  { "status" : "ok",
+					};
+	} else {
+		response =  { "status" : "fail",
+					  "description" : ""
+					};
+	}
+	
+	return response;
