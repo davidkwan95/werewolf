@@ -166,8 +166,24 @@ methodList.vote_result_werewolf = function(message, sock){
 methodList.gameOver = function(message, sock){
 
 	var response;
-	if (game.isGameOver !== 0){
-		game.gameOver;
+	if (game.isGameOver() !== 0){
+		game.gameOver();
+		response =  { "status" : "ok",
+					};
+	} else {
+		response =  { "status" : "fail",
+					  "description" : ""
+					};
+	}
+	
+	return response;
+};
+
+methodList.kpuSelected = function(message, sock){
+
+	var response;
+	if (game.isKpuSelected() !== 0){
+		game.kpuSelected();
 		response =  { "status" : "ok",
 					};
 	} else {

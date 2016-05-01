@@ -67,3 +67,10 @@ methodList.changePhase = function(){
 	
 	return response;
 };
+
+methodList.timeToVote = function(){
+	var response;
+	response = {"status" : "ok"};
+
+	return response;
+}

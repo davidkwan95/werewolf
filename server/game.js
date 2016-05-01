@@ -224,17 +224,36 @@ Game.prototype.isGameOver = function(){
 
 Game.prototype.gameOver = function(){
 	var message;
-	if (isGameOver === 1){
+	if (this.isGameOver() === 1){
 		message = { "method" : "game_over",
 					"winner" : "civilian",
-					"description" : "",
+					"description" : ""
 				  };
 	} else {
 		message = { "method" : "game_over",
 					"winner" : "werewolf",
-					"description" : "",
+					"description" : ""
 				  };
 	}
+};
+
+Game.prototype.isKpuSelected = function(){
+	var count = 0;
+	
+	if (count === 1){
+		return 1;
+	} else {
+		return 0;
+	}
+};
+
+Game.prototype.kpuSelected = function(){
+	var message;
+	if (this.isKpuSelected() === 1){ // KPU is selected
+		message = { "method" : "kpu_selected",
+					"kpu_id" : this.playerList[0].playerId
+				  };
+	} 
 };
 
 module.exports = Game;
