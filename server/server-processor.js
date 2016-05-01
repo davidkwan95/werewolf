@@ -79,9 +79,16 @@ methodList.client_address = function(){
 methodList.leave = function(message, sock){
 
 	var response;
-	game.removePlayer(sock.username);
-	console.log(sock.username);
-	response =  { "status" : "ok"};
+	if(game.isUserExist(sock.username)){
+		game.removePlayer(sock.username);
+		console.log(sock.username);
+		response =  { "status" : "ok"};
+	}
+	else{
+		response =  { "status" : "fail",
+					  "description" : "not in a room"
+					};
+	}
 	
 	return response;
 };
@@ -89,23 +96,37 @@ methodList.leave = function(message, sock){
 methodList.ready = function(message, sock){
 
 	var response;
-	game.changeReadyStat(sock.username);
-	
-	response =  { "status" : "ok",
-				  "description" : "waiting for other player to start"
-				};
-	
-	return response;
-};
-
-methodList.start = function(message, sock){
-
-	var response;
-	if (game.isReadyAll){
-		game.startGame;
+	if(game.isUserExist(sock.username)){
+		game.changeReadyStat(sock.username);
 		response =  { "status" : "ok",
+					  "description" : "waiting for other player to start"
 					};
+	}
+	else{
+		response =  { "status" : "fail",
+					  "description" : "not in a room"
+					};	
 	}
 	
 	return response;
 };
+
+// methodList.start = function(message, sock){
+
+// 	var response;
+// 	if (game.isReadyAll && game.playerList.length >= 6){
+// 		game.startGame;
+// 		response =  { "status" : "ok",
+// 					};
+// 	}else if(game.isReadyAll){
+// 		response =  { "status" : "fail",
+// 					  "description" : "all players must be ready"
+// 					};	
+// 	}else{
+// 		response =  { "status" : "fail",
+// 					  "description" : "the number of players is less than 6"
+// 					};
+// 	}
+	
+// 	return response;
+// };
