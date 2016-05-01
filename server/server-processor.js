@@ -111,17 +111,17 @@ methodList.ready = function(message, sock){
 	return response;
 };
 
-methodList.accepted_proposal = function(message, sock){
+methodList.accepted_proposal = function(message){
 	var response;
 	var majority = Math.floor((game.playerList.length-2)/2) + 1;
 
 	if(game.kpuVote[message.kpu_id]){
 		
 		game.kpuVote[message.kpu_id]++;
-		if(game.kpuVote[message.kpu_id] >= majority && game.selectedKpu < 0){
+		if(game.kpuVote[message.kpu_id] >= majority && !game.isKpuSelected()){
 			console.log("Majority reached! Kpu selected");
-			methodList.kpuSelected(message.kpu_id, sock);
 			game.selectedKpu = message.kpu_id;
+			game.kpuSelected();
 		}
 
 	} else {
@@ -206,7 +206,7 @@ methodList.gameOver = function(message, sock){
 methodList.kpuSelected = function(message, sock){
 
 	var response;
-	if (game.isKpuSelected() !== 0){
+	if (game.isKpuSelected()){
 		game.kpuSelected();
 		response =  { "status" : "ok",
 					};

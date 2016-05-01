@@ -83,3 +83,8 @@ methodList.timeToVote = function(){
 
 	return response;
 };
+
+methodList.kpu_selected = function(message, client){
+	client.udpHelper.paxos.isKpuSelected = true;
+	client.udpHelper.paxos.kpu = message.kpu_selected;
+};

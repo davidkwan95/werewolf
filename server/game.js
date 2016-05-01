@@ -249,25 +249,22 @@ Game.prototype.gameOver = function(){
 };
 
 Game.prototype.isKpuSelected = function(){
-	var count = 0;
-	
-	if (count === 1){
-		return 1;
-	} else {
-		return 0;
-	}
+	return this.selectedKpu >= 0;
 };
 
 Game.prototype.kpuSelected = function(){
+	console.log("Halo, kpunya: " + this.selectedKpu);
 	var message;
 	var stringMessage;
-	if (this.isKpuSelected() === 1){ // KPU is selected
+	if (this.isKpuSelected()){ // KPU is selected
 		message = { "method" : "kpu_selected",
-					"kpu_id" : this.playerList[0].playerId
+					"kpu_id" : this.selectedKpu
 				  };
 		stringMessage = JSON.stringify(message);
 		for(var i=0; i<this.playerList.length; i++){
-			this.playerList[i].sock.write(stringMessage);
+			var sock = this.playerList[i].sock;
+			console.log("Sent message to " + sock.ip + ":" + sock.port + " = " + stringMessage);
+			sock.write(stringMessage);
 		}
 	} 
 };

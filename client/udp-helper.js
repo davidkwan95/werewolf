@@ -6,7 +6,7 @@
 "use strict";
 
 var exports = module.exports = {};
-var paxos = {};
+var paxos = module.exports.paxos = {};
 
 var methodList = {};
 
@@ -51,6 +51,9 @@ exports.startPaxos = function(clientList, client){
 };
 
 exports.sendProposal = function(clientList, client){
+
+	if(paxos.isKpuSelected)
+		return;
 
 	paxos.promiseCount = 0;
 	paxos.previousAccepted = {};
