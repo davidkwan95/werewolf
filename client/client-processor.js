@@ -17,11 +17,14 @@ var methodList = {}; // methodList contains function that always return an objec
 exports.process = function(data, tcp){
 
 	var message = JSON.parse(data);
-	var method = message.method || tcp.method;
-	
-	console.log(method);
+	var method = message.method || tcp.currentRequest;
 
+	console.log(method);
 	var result = methodList[method](message, tcp);
+	
+	// Set the currentRequest back to none, as the request has been responded
+	tcp.currentRequest = ""; 
+
 	return JSON.stringify(result);
 };
 
