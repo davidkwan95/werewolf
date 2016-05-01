@@ -104,45 +104,50 @@ Game.prototype.setPlayerRole = function(){
 
 Game.prototype.startGame = function(){
 	var message;
-	var roleList = this.randomWerewolf();
 	var listWerewolf = [];
 	var werewolf = 0;
 	var count = 0;
 	while(werewolf < 2){
-		if(this.playerList[count] === "werewolf"){	
+		if(this.playerList[count].role === "werewolf"){	
 			listWerewolf[werewolf] = this.playerList[count];
 			werewolf++;
 		}
 		count++;
 	}
 	werewolf = 0;
+	var stringMessage;
 	for(var i=0; i<this.playerList.length; i++){
 		if(this.playerList[i].role == "civilian"){
 			message = { "method" : "start",
-						"time" : "night",
+						"time" : "day",
 						"role" : this.playerList[i].role,
 						"friend" : "",
 						"description" : "game is started",
 					  };
+			stringMessage = JSON.stringify(message);
+			this.playerList[i].sock.write(stringMessage);
 		} else{
 			if(werewolf === 0){
 				message = { "method" : "start",
-							"time" : "night",
+							"time" : "day",
 							"role" : this.playerList[i].role,
 							"friend" : [listWerewolf[1].username],
 							"description" : "game is started",
 						  };	
 			} else{
 				message = { "method" : "start",
-							"time" : "night",
+							"time" : "day",
 							"role" : this.playerList[i].role,
 							"friend" : [listWerewolf[0].username],
 							"description" : "game is started",
 						  };
 			}
+			stringMessage = JSON.stringify(message);
+			this.playerList[i].sock.write(stringMessage);
 			werewolf++;
 		}
-	}	
+	}
+	
 };
 
 Game.prototype.changePhase = function(){
