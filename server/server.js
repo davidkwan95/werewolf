@@ -20,9 +20,7 @@ var server = net.createServer(function(sock){
 	sock.on('data', function(data){
 		console.log("Received Message from " + sock.ip + ":" + sock.port + " = " + data);
 		
-		var response = processor.process(data, sock);
-		console.log("Sent message to " + sock.ip + ":" + sock.port + " = " + response);
-		sock.write(response);
+		processor.process(data, sock);
 	});
 
 	sock.on('close', function(){

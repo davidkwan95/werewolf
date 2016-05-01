@@ -77,7 +77,7 @@ methodList.accepted_proposal = function(){
 	return;
 };
 
-methodList.timeToVote = function(){
+methodList.vote_now = function(message, client){
 	var response;
 	response = {"status" : "ok"};
 

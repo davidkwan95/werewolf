@@ -167,7 +167,7 @@ Game.prototype.changePhase = function(){
 		message = {
 					"method" : "change_phase",
 					"time" : "day",
-					"days" : 3,
+					"days" : ++this.phase[0],
 					"description" : "",
 				};
 		this.phase[1] = "day";
@@ -179,7 +179,7 @@ Game.prototype.changePhase = function(){
 		message = {
 					"method" : "change_phase",
 					"time" : "night",
-					"days" : 3,
+					"days" : this.phase[0],
 					"description" : "",
 				};
 		this.phase[1] = "night";
@@ -193,16 +193,18 @@ Game.prototype.changePhase = function(){
 Game.prototype.timeToVote = function(){
 	var message;
 	var stringMessage;
-	if(this.start == true){
-		message = {
-					"method" : "vote_now",
-					"phase" : this.phase[1]
-				};
-		stringMessage = JSON.stringify(message);
-		for(var i=0; i<this.playerList.length; i++){
-			this.playerList[i].sock.write(stringMessage);
-		}
+	
+	message = {
+				"method" : "vote_now",
+				"phase" : this.phase[1]
+			  };
+	stringMessage = JSON.stringify(message);
+	for(var i=0; i<this.playerList.length; i++){
+		var sock = this.playerList[i].sock;
+		console.log("Sent message to " + sock.ip + ":" + sock.port + " = " + stringMessage);
+		sock.write(stringMessage);
 	}
+	
 };
 
 Game.prototype.isGameOver = function(){
@@ -266,7 +268,9 @@ Game.prototype.kpuSelected = function(){
 			console.log("Sent message to " + sock.ip + ":" + sock.port + " = " + stringMessage);
 			sock.write(stringMessage);
 		}
-	} 
+	}
+
+	this.timeToVote();
 };
 
 module.exports = Game;

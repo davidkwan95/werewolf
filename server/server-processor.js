@@ -21,8 +21,12 @@ exports.process = function(data, sock){
 	var message = JSON.parse(data);
 	var method = message.method;
 	
-	var result = methodList[method](message, sock);
-	return JSON.stringify(result);
+	if(method){
+		var result = methodList[method](message, sock);
+		var stringMessage =  JSON.stringify(result);
+		console.log("Sent message to " + sock.ip + ":" + sock.port + " = " + stringMessage);
+		sock.write(stringMessage);
+	}
 };
 
 methodList.join = function(message, sock){
