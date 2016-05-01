@@ -203,15 +203,15 @@ Game.prototype.timeToVote = function(){
 			this.playerList[i].sock.write(stringMessage);
 		}
 	}
-}
+};
 
 Game.prototype.isGameOver = function(){
 	var countWerewolf = 0;
 	var countCivilian = 0;
 	for(var i=0; i<this.playerList.length; i++){
-		if(this.playerList[i].role == "civilian"){
+		if(this.playerList[i].role == "civilian" && this.playerList[i].isAlive === 1){
 			countCivilian++;
-		} else {
+		} else if(this.playerList[i].role == "werewolf" && this.playerList[i].isAlive === 1){
 			countWerewolf++;
 		}
 	}
@@ -226,16 +226,25 @@ Game.prototype.isGameOver = function(){
 
 Game.prototype.gameOver = function(){
 	var message;
+	var stringMessage;
 	if (this.isGameOver() === 1){
 		message = { "method" : "game_over",
 					"winner" : "civilian",
 					"description" : ""
 				  };
-	} else {
+		stringMessage = JSON.stringify(message);
+		for(var i=0; i<this.playerList.length; i++){
+			this.playerList[i].sock.write(stringMessage);
+		}
+	} else if (this.isGameOver() === 2){
 		message = { "method" : "game_over",
 					"winner" : "werewolf",
 					"description" : ""
 				  };
+		stringMessage = JSON.stringify(message);
+		for(var i=0; i<this.playerList.length; i++){
+			this.playerList[i].sock.write(stringMessage);
+		}
 	}
 };
 
@@ -251,10 +260,15 @@ Game.prototype.isKpuSelected = function(){
 
 Game.prototype.kpuSelected = function(){
 	var message;
+	var stringMessage;
 	if (this.isKpuSelected() === 1){ // KPU is selected
 		message = { "method" : "kpu_selected",
 					"kpu_id" : this.playerList[0].playerId
 				  };
+		stringMessage = JSON.stringify(message);
+		for(var i=0; i<this.playerList.length; i++){
+			this.playerList[i].sock.write(stringMessage);
+		}
 	} 
 };
 
