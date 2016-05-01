@@ -147,26 +147,47 @@ Game.prototype.startGame = function(){
 			werewolf++;
 		}
 	}
-	
+	this.start = true;
 };
 
 Game.prototype.changePhase = function(){
 	var message;
+	var stringMessage;
 	if(this.phase[1] === "night"){
-		message = {
-					"method" : "change_phase",
-					"time" : "night",
-					"days" : 3,
-					"description" : "",
-				};
-	} else{
 		message = {
 					"method" : "change_phase",
 					"time" : "day",
 					"days" : 3,
 					"description" : "",
 				};
+		this.phase[1] = "day";
+		stringMessage = JSON.stringify(message);
+		for(var i=0; i<this.playerList.length; i++){
+			this.playerList[i].sock.write(stringMessage);
+		}
+	} else{
+		message = {
+					"method" : "change_phase",
+					"time" : "night",
+					"days" : 3,
+					"description" : "",
+				};
+		this.phase[1] = "night";
+		stringMessage = JSON.stringify(message);
+		for(var i=0; i<this.playerList.length; i++){
+			this.playerList[i].sock.write(stringMessage);
+		}
 	}
 };
+
+Game.prototype.timeToVote = function(){
+	var message;
+	if(this.start == true){
+		message = {
+					"method" = "vote_now",
+					"phase" = this.phase[1];
+				};
+	}
+}
 
 module.exports = Game;
