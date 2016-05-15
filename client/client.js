@@ -2,13 +2,13 @@
 
 "use strict";
 
-// const readlineSync = require('readline-sync');
+const readlineSync = require('readline-sync');
 
 var net = require('net');
 var processor = require('./client-processor.js');
 
-var tcpHost = '127.0.0.1',
-	tcpPort = '7777';
+var tcpHost = readlineSync.question("Enter server address: "),
+	tcpPort = readlineSync.question("Enter server port: ");
 
 var client = {}; // Store information about the user who runs the program
 client.tcpWriter = require('./tcp-writer');

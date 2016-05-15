@@ -171,7 +171,7 @@ methodList.vote_result_civilian = function(message){
 	return response;
 };
 
-methodList.vote_result_werewolf = function(message, sock){
+methodList.vote_result_werewolf = function(message){
 	var response;
 	if(message.vote_status == 1){
 		game.killPlayer(message.player_killed);
