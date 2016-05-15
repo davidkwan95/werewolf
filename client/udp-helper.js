@@ -64,17 +64,18 @@ exports.startPaxos = function(clientList, client){
 };
 
 methodList.vote_werewolf = function(message, client){
-	
+	client.voting.addVote(message.player_id);
+	if(client.voting.isVotingEnd()){
+		var result = client.voting.getResult();		
+		client.tcpWriter.execute("vote_result_werewolf", client, result);
+	}
 };
 
 methodList.vote_civilian = function(message, client){
 	client.voting.addVote(message.player_id);
 	if(client.voting.isVotingEnd()){
 		var result = client.voting.getResult();
-		if(result[0] == -1)
-			client.tcpWriter.execute("vote_result", client, result);
-		else
-			client.tcpWriter.execute("vote_result_civilian", client, result);
+		client.tcpWriter.execute("vote_result_civilian", client, result);
 	}
 };
 

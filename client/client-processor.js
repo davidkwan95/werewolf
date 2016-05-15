@@ -91,6 +91,11 @@ methodList.vote_result_civilian = function(){
 
 };
 
-methodList.vote_result = function(){
+methodList.vote_result_werewolf = function(){
 
+};
+
+methodList.game_over = function(message){
+	console.log("Game Over!");
+	console.log("Winner " + message.winner);
 };

@@ -13,6 +13,8 @@ class Game{
 		this.phase = [0,"night"];
 		this.kpuVote = {};
 		this.selectedKpu = -1;
+		this.state = "";
+		this.changedState = false;
 	}
 }
 
@@ -104,10 +106,10 @@ Game.prototype.setPlayerRole = function(){
 	}
 };
 
-Game.prototype.killPlayer = function(playerId){	
+Game.prototype.killPlayer = function(playerId){
 	for(var i=0; i<this.playerList.length; i++){
-		if(this.playerList.playerId == playerId){
-			this.playerList.isAlive = 0;
+		if(this.playerList[i].playerId == playerId){
+			this.playerList[i].isAlive = 0;
 		}
 	}
 };
@@ -171,6 +173,15 @@ Game.prototype.startGame = function(){
 	// the appropriate task
 
 	setInterval(function(){
+		if(game.changedState){
+			game.changedState = false;
+			if(game.state === "vote")
+				game.timeToVote();
+			else if(game.state == "changePhase")
+				game.changePhase();
+			else if(game.state === "gameOver")
+				game.gameOver();
+		}
 
 	}, 500);
 
@@ -210,6 +221,8 @@ Game.prototype.changePhase = function(){
 		for(i=0; i<this.playerList.length; i++){
 			this.playerList[i].sock.write(stringMessage);
 		}
+		this.changedState = true;
+		this.state = "vote";
 	}
 };
 
@@ -223,9 +236,13 @@ Game.prototype.timeToVote = function(){
 			  };
 	stringMessage = JSON.stringify(message);
 	for(var i=0; i<this.playerList.length; i++){
-		var sock = this.playerList[i].sock;
-		console.log("Sent message to " + sock.ip + ":" + sock.port + " = " + stringMessage);
-		sock.write(stringMessage);
+		if(this.playerList[i].isAlive){
+			if(this.phase[1] === "day" || this.playerList[i].role === "werewolf"){
+				var sock = this.playerList[i].sock;
+				console.log("Sent message to " + sock.ip + ":" + sock.port + " = " + stringMessage);
+				sock.write(stringMessage);
+			}
+		}
 	}
 	
 };
@@ -293,10 +310,12 @@ Game.prototype.kpuSelected = function(){
 		}
 	}
 
-	var game = this;
-	setTimeout(function(){
-		game.timeToVote();
-	}, 1000);
+	this.changedState = true;
+	if(!(this.phase[0] === 1 && this.phase[1] === "day")){
+		this.state = "vote";
+	} else {
+		this.state = "changePhase";
+	}
 
 };
 

@@ -116,7 +116,7 @@ methodList.ready = function(message, sock){
 	
 	sock.write(JSON.stringify(response));
 
-	if(game.playerList.length >=4 && game.isReadyAll()){
+	if(game.playerList.length >=6 && game.isReadyAll()){
 		game.startGame();
 	}
 };
@@ -145,17 +145,27 @@ methodList.accepted_proposal = function(message){
 	return response;
 };
 
-methodList.vote_result_civilian = function(message, sock){
+methodList.vote_result_civilian = function(message){
 	var response;
 	if(message.vote_status == 1){
 		game.killPlayer(message.player_killed);
 		response =  { "status" : "ok",
 					  "description" : "player " + message.player_killed + " is killed"
 					};
-	}else if (message.vote_status == -1){
+
+		game.changedState = true;
+		if(game.isGameOver()){
+			game.state = "gameOver";
+		} else {
+			game.state = "changePhase";
+		}
+
+	} else if (message.vote_status == -1){
 		response =  { "status" : "ok",
 					  "description" : ""
 					};
+		game.changedState = true;
+		game.state = "vote";
 	}
 
 	return response;
@@ -168,34 +178,25 @@ methodList.vote_result_werewolf = function(message, sock){
 		response =  { "status" : "ok",
 					  "description" : "player " + message.player_killed + " is killed"
 					};
-	}else if (message.vote_status == -1){
+
+		game.changedState = true;
+		if(game.isGameOver()){
+			game.state = "gameOver";
+		} else {
+			game.state = "changePhase";
+		}
+
+	} else if (message.vote_status === -1){
 		response =  { "status" : "ok",
 					  "description" : ""
 					};
+
+		game.changedState = true;
+		game.state = "vote";
 	}
 
 	return response;
 };
-
-// methodList.start = function(message, sock){
-
-// 	var response;
-// 	if (game.isReadyAll && game.playerList.length >= 6){
-// 		game.startGame;
-// 		response =  { "status" : "ok",
-// 					};
-// 	}else if(game.isReadyAll){
-// 		response =  { "status" : "fail",
-// 					  "description" : "all players must be ready"
-// 					};	
-// 	}else{
-// 		response =  { "status" : "fail",
-// 					  "description" : "the number of players is less than 6"
-// 					};
-// 	}
-	
-// 	return response;
-// };
 
 methodList.gameOver = function(message, sock){
 

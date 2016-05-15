@@ -99,29 +99,30 @@ commandList.vote_result_civilian = function(client, args){
 	var playerKilled = args[0];
 	var voteResult = args[1];
 	var message = { "method" : "vote_result_civilian",
-					"vote_status" : 1,
-					"player_killed" : playerKilled, // ganti setelah dapet player mati
 					"vote_result" : voteResult
 				  };
-	return message;
+	if(playerKilled>=0){
+		message.vote_status = 1;
+		message.player_killed = playerKilled;
+	} else{
+		message.vote_status = -1;
+	}
+
+	return message;	
 };
 
-commandList.vote_result = function(client,args){
-	
+commandList.vote_result_werewolf = function(client, args){
+	var playerKilled = args[0];
 	var voteResult = args[1];
-	var message = { "method" : "vote_result_civilian",
-					"vote_status" : -1,
+	var message = { "method" : "vote_result_werewolf",
 					"vote_result" : voteResult
 				  };
-	return message;
-};
+	if(playerKilled>=0){
+		message.vote_status = 1;
+		message.player_killed = playerKilled;
+	} else{
+		message.vote_status = -1;
+	}
 
-commandList.vote_result_werewolf = function(){
-	
-	var message = { "method" : "vote_result_werewolf",
-					"vote_status" : 1,
-					"player_killed" : 4, // ganti setelah dapet player mati
-					"vote_result" : "[1, 2]"
-				  };
 	return message;
 };

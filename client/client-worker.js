@@ -37,10 +37,26 @@ exports.taskMethod.vote_now = function(phase){
 	return function(){
 
 		var kpuId = client.udpHelper.paxos.kpu;
+		var i;
 		if(client.playerId === kpuId){
 			var numParticipants;
-			if(phase === "day")
-				numParticipants = client.clientList.length;
+			
+			if(phase ==="day"){
+				numParticipants = 0;
+				for(i=0; i<client.clientList.length; i++){
+					if(client.clientList[i].isAlive){
+						numParticipants++;
+					}
+				}
+			} else {
+				numParticipants = 2;
+				for(i=0; i<client.clientList.length; i++){
+					if(!client.clientList[i].isAlive && client.clientList[i].role === "werewolf"){
+						numParticipants--;
+					}
+				}
+			}
+			
 
 			client.voting = new Voting(numParticipants);
 		}
