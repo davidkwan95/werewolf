@@ -11,7 +11,6 @@ var joinned = false;
 
 var methodList = {}; // methodList contains function that always return an object
 
-
 exports.process = function(data, client){
 
 	var message = JSON.parse(data);
@@ -42,10 +41,6 @@ methodList.join = function(message,client){
 methodList.client_address = function(message, client){
 
 	client.clientList = message.clients;
-
-	if(client.clientList.length == 4 ){
-		client.udpHelper.startPaxos(client.clientList, client);
-	}
 };
 
 methodList.ready = function(){
@@ -60,13 +55,16 @@ methodList.leave = function(){
 methodList.start = function(){
 	var response;
 	response =  { "status" : "ok"};
-	
+
 	return response;
 };
 
-methodList.changePhase = function(){
+methodList.change_phase = function(message, client){
 	var response;
 	response =  { "status" : "ok"};
+
+	if(message.time === "day")
+		client.worker.addTask(client.worker.taskMethod.startPaxos(client));
 	
 	return response;
 };
@@ -79,12 +77,12 @@ methodList.accepted_proposal = function(){
 methodList.vote_now = function(message, client){
 	var response;
 	response = {"status" : "ok"};
-	client.worker.addTask(client.worker.vote_now(message.phase));
+	client.worker.addTask(client.worker.taskMethod.vote_now(message.phase));
 
 	return response;
 };
 
 methodList.kpu_selected = function(message, client){
 	client.udpHelper.paxos.isKpuSelected = true;
-	client.udpHelper.paxos.kpu = message.kpu_selected;
+	client.udpHelper.paxos.kpu = message.kpu_id;
 };

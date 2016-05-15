@@ -23,9 +23,11 @@ exports.process = function(data, sock){
 	
 	if(method){
 		var result = methodList[method](message, sock);
-		var stringMessage =  JSON.stringify(result);
-		console.log("Sent message to " + sock.ip + ":" + sock.port + " = " + stringMessage);
-		sock.write(stringMessage);
+		if(result){
+			var stringMessage =  JSON.stringify(result);
+			console.log("Sent message to " + sock.ip + ":" + sock.port + " = " + stringMessage);
+			sock.write(stringMessage);
+		}
 	}
 };
 
@@ -112,7 +114,11 @@ methodList.ready = function(message, sock){
 					};	
 	}
 	
-	return response;
+	sock.write(JSON.stringify(response));
+
+	if(game.playerList.length >=4 && game.isReadyAll()){
+		game.startGame();
+	}
 };
 
 methodList.accepted_proposal = function(message){

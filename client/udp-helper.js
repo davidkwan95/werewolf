@@ -16,6 +16,7 @@ exports.process = function(data, remote, client){
 	var method = message.method || paxos.state;
 
 	var response = methodList[method](message, client);
+	console.log(method);
 
 	if(response){
 		var json = JSON.stringify(response);
@@ -35,10 +36,11 @@ exports.sendMessage = function(string, port, host, udp){
 exports.getUdpInfo = function(playerId, clientList){
 	var info = {};
 	for(var i=0; i< clientList.length; i++){
-		if(clientList[i].player_id == playerId){
+		if(clientList[i].player_id === playerId){
 			info.address = clientList[i].address;
 			info.port = clientList[i].port;
 
+			console.log(info);
 			return info;
 		}
 	}
@@ -61,6 +63,15 @@ exports.startPaxos = function(clientList, client){
 	}
 };
 
+methodList.vote_werewolf = function(message, client){
+	
+};
+
+methodList.vote_civilian = function(message, client){
+	
+};
+
+// The part after this is all for paxos (will be refactored to new file later)
 exports.sendProposal = function(clientList, client){
 
 	if(paxos.isKpuSelected)
@@ -94,9 +105,11 @@ exports.sendProposal = function(clientList, client){
 
 	paxos.intervalId = setTimeout(function(){
 
-		if(paxos.promiseCount < majority){
+		if(!paxos.isKpuSelected && paxos.promiseCount < majority){
 			console.log("Promise majority fail, resending proposal");
 			exports.sendProposal(clientList, client);
+		} else if(paxos.isKpuSelected){
+			clearTimeout(paxos.intervalId);
 		}
 
 	}, 20000);

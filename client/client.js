@@ -25,17 +25,11 @@ client.tcp.connect(tcpPort, tcpHost, function(){
 	
 	client.tcpWriter.execute("join", client);
 
-	// List client
+	// Test ready
 	setTimeout(function(){
 
-		client.tcpWriter.execute("client_address", client);
-	}, 1000);
-
-	// // Test ready
-	// setTimeout(function(){
-
-	// 	tcpWriter.execute("ready", client);
-	// }, 2000);
+		client.tcpWriter.execute("ready", client);
+	}, 2000);
 
 	// setTimeout( function(){
 		

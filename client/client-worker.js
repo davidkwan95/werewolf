@@ -33,14 +33,33 @@ exports.addTask = function(task){
 };
 
 exports.taskMethod.vote_now = function(phase){
-	var id = readlineSync.question("Enter the id that you want to kill: ");
-	var kpuId = client.udpHelper.paxos.kpu;
+	return function(){
+		var id = readlineSync.question("Enter the id that you want to kill: ");
+		var kpuId = client.udpHelper.paxos.kpu;
+		console.log(kpuId);
 
-	var kpuUdpInfo = client.udpHelper.getUdpInfo(kpuId, client.clientList);
-	var message = { "method" : phase === "night"?"vote_werewolf":"vote_civillian",
-					"player_id" : id
-				  };
+		var kpuUdpInfo = client.udpHelper.getUdpInfo(kpuId, client.clientList);
+		var message = { "method" : phase === "night"?"vote_werewolf":"vote_civilian",
+						"player_id" : id
+					  };
 
-	var json = JSON.stringify(message);
-	client.udpHelper.sendMessage(json, kpuUdpInfo.port, kpuUdpInfo.address, client.udp);
+		var json = JSON.stringify(message);
+		client.udpHelper.sendMessage(json, kpuUdpInfo.port, kpuUdpInfo.address, client.udp);
+	};
+};
+
+exports.taskMethod.startPaxos = function(client){
+	return function(){
+		client.clientList = -1;
+		client.tcpWriter.execute("client_address", client);
+
+		// Wait until clientList is updated, then start Paxos
+		var intervalId = setInterval(function(){
+			if(client.clientList !== -1){
+				clearTimeout(intervalId);
+				client.udpHelper.startPaxos(client.clientList, client);
+			}
+
+		}, 500);
+	};
 };

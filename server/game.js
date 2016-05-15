@@ -10,7 +10,7 @@ class Game{
 		this.playerList = [];
 		this.usernameMap = {};
 		this.start = false;
-		this.phase = [1,"day"];
+		this.phase = [0,"night"];
 		this.kpuVote = {};
 		this.selectedKpu = -1;
 	}
@@ -63,7 +63,7 @@ Game.prototype.randomWerewolf = function(){
 	var countWerewolf = 0;
 	var roleList = [];
 	var role;
-	for (var i = 0;i<this.playerList.length();i++){
+	for (var i = 0;i<this.playerList.length;i++){
 		role = Math.random();
 		if (role === 1){
 			if (countWerewolf < 2){
@@ -74,13 +74,13 @@ Game.prototype.randomWerewolf = function(){
 				roleList.push(role);
 			}
 		} else {
-			if (i === this.playerList.length()-2 && countWerewolf === 0){
+			if (i === this.playerList.length - 2 && countWerewolf === 0){
 				role = 1;
 				roleList.push(role);
 				roleList.push(role);
 				countWerewolf += 2;
 				break;
-			} else if (i == this.playerList.length()-1 && countWerewolf == 1){
+			} else if (i == this.playerList.length - 1 && countWerewolf == 1){
 				role = 1;
 				roleList.push(role);
 				countWerewolf++;
@@ -113,6 +113,8 @@ Game.prototype.killPlayer = function(playerId){
 };
 
 Game.prototype.startGame = function(){
+	this.setPlayerRole();
+
 	var message;
 	var listWerewolf = [];
 	var werewolf = 0;
@@ -157,7 +159,21 @@ Game.prototype.startGame = function(){
 			werewolf++;
 		}
 	}
+
 	this.start = true;
+
+	var game = this;
+	setTimeout(function(){
+		game.changePhase();
+	}, 1000);
+
+	// Async check the state of the game, if changed, execute
+	// the appropriate task
+
+	setInterval(function(){
+
+	}, 500);
+
 };
 
 Game.prototype.changePhase = function(){
@@ -271,7 +287,11 @@ Game.prototype.kpuSelected = function(){
 		}
 	}
 
-	this.timeToVote();
+	var game = this;
+	setTimeout(function(){
+		game.timeToVote();
+	}, 1000);
+
 };
 
 module.exports = Game;
