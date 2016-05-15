@@ -37,7 +37,7 @@ commandList.join = function(client){
 
 	client.username = readlineSync.question("Enter your username: ");
 	
-	client.udpHost = "127.0.0.1";
+	client.udpHost = readlineSync.question("Enter your address (UDP): ");
 	client.udpPort = readlineSync.question("Enter port number to bind to: ");
 
 	var message = { "method" : "join",
@@ -56,7 +56,7 @@ commandList.join = function(client){
 
 	});
 
-	client.udp.bind(client.udpPort, "127.0.0.1");
+	client.udp.bind(client.udpPort);
 	console.log("Binding to portno: " + client.udpPort);
 
 	return message;
