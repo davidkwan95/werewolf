@@ -10,7 +10,7 @@ class Game{
 		this.playerList = [];
 		this.usernameMap = {};
 		this.start = false;
-		this.phase = [1,"night"];
+		this.phase = [1,"day"];
 		this.kpuVote = {};
 		this.selectedKpu = -1;
 	}
@@ -163,6 +163,7 @@ Game.prototype.startGame = function(){
 Game.prototype.changePhase = function(){
 	var message;
 	var stringMessage;
+	var i;
 	if(this.phase[1] === "night"){
 		message = {
 					"method" : "change_phase",
@@ -172,7 +173,7 @@ Game.prototype.changePhase = function(){
 				};
 		this.phase[1] = "day";
 		stringMessage = JSON.stringify(message);
-		for(var i=0; i<this.playerList.length; i++){
+		for(i=0; i<this.playerList.length; i++){
 			this.playerList[i].sock.write(stringMessage);
 		}
 	} else{
@@ -184,7 +185,7 @@ Game.prototype.changePhase = function(){
 				};
 		this.phase[1] = "night";
 		stringMessage = JSON.stringify(message);
-		for(var i=0; i<this.playerList.length; i++){
+		for(i=0; i<this.playerList.length; i++){
 			this.playerList[i].sock.write(stringMessage);
 		}
 	}

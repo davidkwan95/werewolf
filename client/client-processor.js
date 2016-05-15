@@ -7,7 +7,6 @@
 
 var exports = module.exports = {};
 
-var clientList = [];
 var joinned = false;
 
 var methodList = {}; // methodList contains function that always return an object
@@ -42,10 +41,10 @@ methodList.join = function(message,client){
 
 methodList.client_address = function(message, client){
 
-	clientList = message.clients;
+	client.clientList = message.clients;
 
-	if(clientList.length == 4 ){
-		client.udpHelper.startPaxos(clientList, client);
+	if(client.clientList.length == 4 ){
+		client.udpHelper.startPaxos(client.clientList, client);
 	}
 };
 
@@ -80,6 +79,7 @@ methodList.accepted_proposal = function(){
 methodList.vote_now = function(message, client){
 	var response;
 	response = {"status" : "ok"};
+	client.worker.addTask(client.worker.vote_now(message.phase));
 
 	return response;
 };

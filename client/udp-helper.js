@@ -32,6 +32,17 @@ exports.sendMessage = function(string, port, host, udp){
 	});
 };
 
+exports.getUdpInfo = function(playerId, clientList){
+	var info = {};
+	for(var i=0; i< clientList.length; i++){
+		if(clientList[i].player_id == playerId){
+			info.address = clientList[i].address;
+			info.port = clientList[i].port;
+
+			return info;
+		}
+	}
+};
 
 // For selecting leader in a round
 exports.startPaxos = function(clientList, client){
