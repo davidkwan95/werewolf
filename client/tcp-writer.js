@@ -95,21 +95,23 @@ commandList.accepted_proposal = function(client, args){
 	return message;
 };
 
-commandList.vote_result_civilian = function(){
-	
+commandList.vote_result_civilian = function(client, args){
+	var playerKilled = args[0];
+	var voteResult = args[1];
 	var message = { "method" : "vote_result_civilian",
 					"vote_status" : 1,
-					"player_killed" : 4, // ganti setelah dapet player mati
-					"vote_result" : "[1, 2]"
+					"player_killed" : playerKilled, // ganti setelah dapet player mati
+					"vote_result" : voteResult
 				  };
 	return message;
 };
 
-commandList.vote_result = function(){
+commandList.vote_result = function(client,args){
 	
+	var voteResult = args[1];
 	var message = { "method" : "vote_result_civilian",
 					"vote_status" : -1,
-					"vote_result" : "[1, 2]"
+					"vote_result" : voteResult
 				  };
 	return message;
 };

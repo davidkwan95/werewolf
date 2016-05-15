@@ -86,3 +86,11 @@ methodList.kpu_selected = function(message, client){
 	client.udpHelper.paxos.isKpuSelected = true;
 	client.udpHelper.paxos.kpu = message.kpu_id;
 };
+
+methodList.vote_result_civilian = function(){
+
+};
+
+methodList.vote_result = function(){
+
+};

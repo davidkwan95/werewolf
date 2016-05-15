@@ -6,6 +6,7 @@
 "use strict";
 
 const readlineSync = require('readline-sync');
+var Voting = require('./voting.js');
 
 var exports = module.exports = {};
 
@@ -34,15 +35,22 @@ exports.addTask = function(task){
 
 exports.taskMethod.vote_now = function(phase){
 	return function(){
-		var id = readlineSync.question("Enter the id that you want to kill: ");
+
 		var kpuId = client.udpHelper.paxos.kpu;
-		console.log(kpuId);
+		if(client.playerId === kpuId){
+			var numParticipants;
+			if(phase === "day")
+				numParticipants = client.clientList.length;
+
+			client.voting = new Voting(numParticipants);
+		}
+
+		var id = parseInt(readlineSync.question("Enter the id that you want to kill: "));
 
 		var kpuUdpInfo = client.udpHelper.getUdpInfo(kpuId, client.clientList);
 		var message = { "method" : phase === "night"?"vote_werewolf":"vote_civilian",
 						"player_id" : id
 					  };
-
 		var json = JSON.stringify(message);
 		client.udpHelper.sendMessage(json, kpuUdpInfo.port, kpuUdpInfo.address, client.udp);
 	};

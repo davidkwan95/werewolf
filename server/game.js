@@ -176,11 +176,17 @@ Game.prototype.startGame = function(){
 
 };
 
+Game.prototype.resetPaxos = function(){
+	this.kpuVote = {};
+	this.selectedKpu = -1;
+};
+
 Game.prototype.changePhase = function(){
 	var message;
 	var stringMessage;
 	var i;
 	if(this.phase[1] === "night"){
+		this.resetPaxos();
 		message = {
 					"method" : "change_phase",
 					"time" : "day",
@@ -246,13 +252,14 @@ Game.prototype.isGameOver = function(){
 Game.prototype.gameOver = function(){
 	var message;
 	var stringMessage;
+	var i;
 	if (this.isGameOver() === 1){
 		message = { "method" : "game_over",
 					"winner" : "civilian",
 					"description" : ""
 				  };
 		stringMessage = JSON.stringify(message);
-		for(var i=0; i<this.playerList.length; i++){
+		for(i=0; i<this.playerList.length; i++){
 			this.playerList[i].sock.write(stringMessage);
 		}
 	} else if (this.isGameOver() === 2){
@@ -261,7 +268,7 @@ Game.prototype.gameOver = function(){
 					"description" : ""
 				  };
 		stringMessage = JSON.stringify(message);
-		for(var i=0; i<this.playerList.length; i++){
+		for(i=0; i<this.playerList.length; i++){
 			this.playerList[i].sock.write(stringMessage);
 		}
 	}
@@ -272,7 +279,6 @@ Game.prototype.isKpuSelected = function(){
 };
 
 Game.prototype.kpuSelected = function(){
-	console.log("Halo, kpunya: " + this.selectedKpu);
 	var message;
 	var stringMessage;
 	if (this.isKpuSelected()){ // KPU is selected

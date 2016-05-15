@@ -68,7 +68,14 @@ methodList.vote_werewolf = function(message, client){
 };
 
 methodList.vote_civilian = function(message, client){
-	
+	client.voting.addVote(message.player_id);
+	if(client.voting.isVotingEnd()){
+		var result = client.voting.getResult();
+		if(result[0] == -1)
+			client.tcpWriter.execute("vote_result", client, result);
+		else
+			client.tcpWriter.execute("vote_result_civilian", client, result);
+	}
 };
 
 // The part after this is all for paxos (will be refactored to new file later)
