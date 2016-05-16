@@ -105,7 +105,7 @@ exports.sendProposal = function(clientList, client){
 		var port = clientList[i].port,
 			host = clientList[i].address;
 
-		exports.sendUnreliable(json, port, host, client.udp);
+		exports.sendMessage(json, port, host, client.udp);
 	}
 	var majority = Math.floor((clientList.length - 2)/2) + 1;
 
@@ -158,7 +158,7 @@ exports.sendAccept = function(clientList, client){
 		var port = clientList[i].port,
 			host = clientList[i].address;
 
-		exports.sendUnreliable(json, port, host, client.udp);
+		exports.sendMessage(json, port, host, client.udp);
 	}
 	
 	var majority = Math.floor((clientList.length - 2)/2) + 1;
