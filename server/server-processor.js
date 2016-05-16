@@ -19,7 +19,6 @@ var methodList = {}; // methodList contains function that always return an objec
 exports.process = function(data, sock){
 
 	var responses = data.toString().split("\n");
-
 	for(var i=0; i<responses.length-1; i++){
 		var message = JSON.parse(responses[i]);
 		var method = message.method;

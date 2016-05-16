@@ -33,6 +33,12 @@ exports.sendMessage = function(string, port, host, udp){
 	});
 };
 
+exports.sendUnreliable = function(string, port, host, udp){
+	var rand = Math.random();
+	if(rand < 0.85)
+		exports.sendMessage(string, port, host, udp);
+};
+
 exports.getUdpInfo = function(playerId, clientList){
 	var info = {};
 	for(var i=0; i< clientList.length; i++){
@@ -99,7 +105,7 @@ exports.sendProposal = function(clientList, client){
 		var port = clientList[i].port,
 			host = clientList[i].address;
 
-		exports.sendMessage(json, port, host, client.udp);
+		exports.sendUnreliable(json, port, host, client.udp);
 	}
 	var majority = Math.floor((clientList.length - 2)/2) + 1;
 
@@ -120,7 +126,7 @@ exports.sendProposal = function(clientList, client){
 			clearTimeout(paxos.intervalId);
 		}
 
-	}, 20000);
+	}, 5000);
 };
 
 exports.sendAccept = function(clientList, client){
@@ -152,7 +158,7 @@ exports.sendAccept = function(clientList, client){
 		var port = clientList[i].port,
 			host = clientList[i].address;
 
-		exports.sendMessage(json, port, host, client.udp);
+		exports.sendUnreliable(json, port, host, client.udp);
 	}
 	
 	var majority = Math.floor((clientList.length - 2)/2) + 1;
@@ -171,7 +177,7 @@ exports.sendAccept = function(clientList, client){
 			console.log("Accept majority fail, resending proposal");
 			exports.sendProposal(clientList, client);
 		}
-	}, 20000);
+	}, 5000);
 };
 
 var isBigger = function(promise1, promise2){
