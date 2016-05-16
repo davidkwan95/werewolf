@@ -28,7 +28,7 @@ exports.execute = function(command, client, args){
 	var message = commandList[command](client, args);
 	client.tcp.currentRequest = command;
 
-	client.tcp.write(JSON.stringify(message) + '\n');
+	client.tcp.write(JSON.stringify(message));
 };
 
 

@@ -12,23 +12,20 @@ var joinned = false;
 var methodList = {}; // methodList contains function that always return an object
 
 exports.process = function(data, client){
-	var responses = data.toString().split("\n");
 
-	for(var i=0; i<responses.length-1; i++){
-		console.log(responses[i]);
-		var message = JSON.parse(responses[i]);
-		var method = message.method || client.tcp.currentRequest;
+	var message = JSON.parse(data);
+	var method = message.method || client.tcp.currentRequest;
 
-		console.log(method);
-		var response = methodList[method](message, client);
-		
-		// Set the currentRequest back to none, as the request has been responded
-		if(!message.method)
-			client.tcp.currentRequest = "";
+	console.log(method);
+	var response = methodList[method](message, client);
+	
+	// Set the currentRequest back to none, as the request has been responded
+	if(!message.method)
+		client.tcp.currentRequest = "";
 
-		if(response)
-			client.tcp.write(JSON.stringify(response) + '\n');
-	}
+	if(response)
+		client.tcp.write(JSON.stringify(response));
+	
 };
 
 
