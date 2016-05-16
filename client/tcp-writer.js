@@ -37,7 +37,8 @@ commandList.join = function(client){
 
 	client.username = readlineSync.question("Enter your username: ");
 	
-	client.udpHost = readlineSync.question("Enter your address (UDP): ");
+	client.udpHost = "127.0.0.1";
+	// client.udpHost = readlineSync.question("Enter your address (UDP): ");
 	client.udpPort = readlineSync.question("Enter port number to bind to: ");
 
 	var message = { "method" : "join",
@@ -77,9 +78,10 @@ commandList.ready = function(){
 	return message;
 };
 
-commandList.leave = function(){
+commandList.leave = function(client){
 	
 	var message = { "method" : "leave" }; // Test leave
+	client.udp.close();
 
 	return message;
 };

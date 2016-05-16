@@ -7,8 +7,10 @@ const readlineSync = require('readline-sync');
 var net = require('net');
 var processor = require('./client-processor.js');
 
-var tcpHost = readlineSync.question("Enter server address: "),
-	tcpPort = readlineSync.question("Enter server port: ");
+var tcpHost = "127.0.0.1",
+	tcpPort = 7777;
+// var tcpHost = readlineSync.question("Enter server address: "),
+// 	tcpPort = readlineSync.question("Enter server port: ");
 
 var client = {}; // Store information about the user who runs the program
 client.tcpWriter = require('./tcp-writer');
@@ -22,19 +24,14 @@ client.tcp.connect(tcpPort, tcpHost, function(){
 
 	client.tcp.currentRequest = "";
 	console.log("Connected to: " + tcpHost + ":" + tcpPort);
-	
-	client.tcpWriter.execute("join", client);
 
-	// Test ready
-	setTimeout(function(){
-
-		client.tcpWriter.execute("ready", client);
-	}, 2000);
-
-	// setTimeout( function(){
-		
-	// 	tcpWriter.execute("leave", client);
-	// }, 2500 );
+	client.ready = false;
+	setInterval(function(){
+		if(!client.ready){
+			var command = readlineSync.question("Enter command: ");			
+			client.tcpWriter.execute(command,client);
+		}
+	}, 500);
 
 });
 

@@ -12,19 +12,23 @@ var joinned = false;
 var methodList = {}; // methodList contains function that always return an object
 
 exports.process = function(data, client){
+	var responses = data.toString().split("\n");
 
-	var message = JSON.parse(data);
-	var method = message.method || client.tcp.currentRequest;
+	for(var i=0; i<responses.length-1; i++){
+		console.log(responses[i]);
+		var message = JSON.parse(responses[i]);
+		var method = message.method || client.tcp.currentRequest;
 
-	console.log(method);
-	var response = methodList[method](message, client);
-	
-	// Set the currentRequest back to none, as the request has been responded
-	if(!message.method)
-		client.tcp.currentRequest = "";
+		console.log(method);
+		var response = methodList[method](message, client);
+		
+		// Set the currentRequest back to none, as the request has been responded
+		if(!message.method)
+			client.tcp.currentRequest = "";
 
-	if(response)
-		client.tcp.write(JSON.stringify(response));
+		if(response)
+			client.tcp.write(JSON.stringify(response) + '\n');
+	}
 };
 
 
@@ -35,6 +39,8 @@ methodList.join = function(message,client){
 		joinned = true;
 		client.playerId = message.player_id;
 		console.log("Joined the game");
+	} else {
+		client.udp.close();
 	}
 };
 
@@ -43,8 +49,9 @@ methodList.client_address = function(message, client){
 	client.clientList = message.clients;
 };
 
-methodList.ready = function(){
-	return;
+methodList.ready = function(message, client){
+	if(message.status === "ok")
+		client.ready = true;
 };
 
 methodList.leave = function(){

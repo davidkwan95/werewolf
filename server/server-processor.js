@@ -18,15 +18,19 @@ var methodList = {}; // methodList contains function that always return an objec
    Output = Stringify Object */
 exports.process = function(data, sock){
 
-	var message = JSON.parse(data);
-	var method = message.method;
-	
-	if(method){
-		var result = methodList[method](message, sock);
-		if(result){
-			var stringMessage =  JSON.stringify(result);
-			console.log("Sent message to " + sock.ip + ":" + sock.port + " = " + stringMessage);
-			sock.write(stringMessage);
+	var responses = data.toString().split("\n");
+
+	for(var i=0; i<responses.length-1; i++){
+		var message = JSON.parse(responses[i]);
+		var method = message.method;
+		
+		if(method){
+			var result = methodList[method](message, sock);
+			if(result){
+				var stringMessage =  JSON.stringify(result);
+				console.log("Sent message to " + sock.ip + ":" + sock.port + " = " + stringMessage);
+				sock.write(stringMessage + '\n');
+			}
 		}
 	}
 };
@@ -114,7 +118,7 @@ methodList.ready = function(message, sock){
 					};	
 	}
 	
-	sock.write(JSON.stringify(response));
+	sock.write(JSON.stringify(response) + '\n');
 
 	if(game.playerList.length >=6 && game.isReadyAll()){
 		game.startGame();
